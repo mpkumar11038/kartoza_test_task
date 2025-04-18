@@ -14,7 +14,8 @@ urlpatterns = [
     path('do_logout', views.do_logout, name='logout'),
     
     path('manage_user', views.manage_users, name='manage_users'),
-    path('edit_user/<str:id>', views.edit_user_profile, name='edit_user')
+    path('edit_user/<str:id>', views.edit_user_profile, name='edit_user'),
+    path('map', views.map, name='map')  
 
 ]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

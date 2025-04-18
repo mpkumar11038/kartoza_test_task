@@ -146,3 +146,41 @@ def edit_user_profile(request, id):
     else:
         logger.warning("Invalid request method for edit_user_profile.")
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+@login_required(login_url='/')
+def map(request):
+    """
+    Render a map view showing all users with location data.
+    Passes user location info and Google Maps API key to template.
+    """
+    if request.method == 'GET':
+        try:
+            users = CustomUser.objects.all()
+            user_locations = [
+                {
+                    'name': user.username if user.username else '',
+                    'email': user.email if user.email else '',
+                    'first_name': user.first_name if user.first_name else '',
+                    'last_name': user.last_name if user.last_name else '',
+                    'phone_number': user.phone_number if user.phone_number else '',
+                    'home_address': user.home_address if user.home_address else '',
+                    'lat': user.location.y if user.location else '',
+                    'lng': user.location.x if user.location else ''
+                }
+                for user in users if user.location
+            ]     
+            context = {
+                'api_key': settings.GOOGLE_MAPS_API_KEY,  # Use settings for API key
+                'latitude': 28.6139,   # Default map center latitude (New Delhi)
+                'longitude': 77.2090,  # Default map center longitude (New Delhi)
+                'user_locations': user_locations
+            }
+            response = render(request, 'map.html', context)
+            response.status_code = 200
+            return response
+        except Exception as e:
+            logger.error(f"Error in map view: {e}")
+            return JsonResponse({'status': 'error', 'message': 'An error occurred while rendering the map.'}, status=500)
+    else:
+        logger.warning("Invalid request method for map.")
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
