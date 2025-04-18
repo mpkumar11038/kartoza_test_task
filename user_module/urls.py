@@ -1,22 +1,20 @@
-"""
-URL configuration for user_module project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from user_app.admin import custom_admin_site
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    path('admin/', custom_admin_site.urls),
+    path('base/', views.base, name='base'),
+    path('', views.custom_login, name='login'),
+    path('do_login', views.do_login, name='do_login'),
+    path('do_logout', views.do_logout, name='logout'),
+    
+    path('manage_user', views.manage_users, name='manage_users'),
+    path('edit_user/<str:id>', views.edit_user_profile, name='edit_user')
+
+]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
