@@ -158,12 +158,12 @@ def map(request):
             users = CustomUser.objects.all()
             user_locations = [
                 {
-                    'name': user.username if user.username else '',
-                    'email': user.email if user.email else '',
-                    'first_name': user.first_name if user.first_name else '',
-                    'last_name': user.last_name if user.last_name else '',
-                    'phone_number': user.phone_number if user.phone_number else '',
-                    'home_address': user.home_address if user.home_address else '',
+                    'name': user.username or '',
+                    'email': user.email or '',
+                    'first_name': user.first_name or '',
+                    'last_name': user.last_name or '',
+                    'phone_number': user.phone_number or '',
+                    'home_address': user.home_address or '',
                     'lat': user.location.y if user.location else '',
                     'lng': user.location.x if user.location else ''
                 }

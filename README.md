@@ -50,61 +50,71 @@ The **User Module** is a Django-based application that provides user management 
 1. **Clone the Repository**:
    Download the project files from the repository and navigate to the project directory.
     ```bash
-   git clone <repository-url>
-   cd user_module
+    git clone <repository-url>
+    ```
 
 2. **Set Up Virtual Environment**:
    Create and activate a virtual environment to isolate dependencies.
     ```bash
-   python3 -m venv env
-   source env/bin/activate
+    python3 -m venv env
+    source env/bin/activate
+    ```
 
 3. **Install Dependencies**:
    Install all required Python packages listed in the `requirements.txt` file.
     ```bash
     pip install -r requirements.txt
+    ```
 
-4. **Set Up the Database**:
-   Configure a PostgreSQL database with PostGIS extension and update the database settings in the `settings.py` file.
-    ```bash
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.postgis', 
-            'NAME': 'username',                                
-            'USER': 'dbname',                                      
-            'PASSWORD': 'password',                                      
-            'HOST': 'hostname',                               
-            'PORT': 'port',                                  
-        }
-    }
+4. **Create the `.env` File**:
+   Create a `.env` file in the root directory and add the following configuration:
+    ```plaintext
+    # Database configuration
+    DB_ENGINE=django.contrib.gis.db.backends.postgis
+    DB_NAME=dbname
+    DB_USER=dbuser
+    DB_PASSWORD=dbpassword
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
 
-6. **Load Static Files**:
-   Collect all static files for the project.
-   ```bash
-    python manage.py collectstatic
+    # Google Maps API Key
+    GOOGLE_MAPS_API_KEY=AIzaSyAsQhvWRnmGTyoTyFkANrkzI3shdvkjn
+    ```
 
-5. **Run Migrations**:
+5. **Set Up the Database**:
+   Ensure PostgreSQL with PostGIS is installed and running. Create a database and configure the `.env` file with the correct credentials.
+
+6. **Run Migrations**:
    Apply database migrations to set up the required tables.
-   ```bash
+    ```bash
     python manage.py makemigrations
-
-6. **Run Migrate**:
-   Apply database migrate to set up the required tables.
-   ```bash
     python manage.py migrate
+    ```
 
-7. **Run the Test Case**:
-   Apply the test cases.
-   ```bash
+7. **Load Static Files**:
+   Collect all static files for the project.
+    ```bash
+    python manage.py collectstatic
+    ```
+
+8. **Run the Test Cases**:
+   Run the test suite to ensure the application is working as expected.
+    ```bash
     python manage.py test
-
-8. **Run the development server**:
+    ```
+9. **Run the Development Server**:
    Start the Django development server to access the application.
-   ```bash
+    ```bash
+    python manage.py createsuperuser
+    ```
+10. **Run the Development Server**:
+   Start the Django development server to access the application.
+    ```bash
     python manage.py runserver 0.0.0.0:8000
+    ```
 
-8. **Access the Application**:
-   Open your browser and navigate to the local server URL.
+10. **Access the Application**:
+    Open your browser and navigate to `http://127.0.0.1:8000` to access the application.
 
 ---
 
@@ -120,7 +130,7 @@ The **User Module** is a Django-based application that provides user management 
 
 ### Map View
 - View user locations on a map using the "Map" page.
-- Ensure the Google Maps API key is configured in the `settings.py` file.
+- Ensure the Google Maps API key is configured in the `.env` file.
 
 ---
 
