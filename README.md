@@ -66,8 +66,8 @@ The **User Module** is a Django-based application that provides user management 
     pip install -r requirements.txt
     ```
 
-4. **Create the `.env` File**:
-   Create a `.env` file in the root directory and add the following configuration:
+4. **Create the `example.env` File**:
+   Create .env from the `example.env` file in the root directory and add the following configuration:
     ```plaintext
     # Database configuration
     DB_ENGINE=django.contrib.gis.db.backends.postgis
@@ -78,7 +78,7 @@ The **User Module** is a Django-based application that provides user management 
     DB_PORT=5432
 
     # Google Maps API Key
-    GOOGLE_MAPS_API_KEY=AIzaSyAsQhvWRnmGTyoTyFkANrkzI3shdvkjn
+    GOOGLE_MAPS_API_KEY=<Google API key>
     ```
 
 5. **Set Up the Database**:
