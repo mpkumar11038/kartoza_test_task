@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>USER MODULE</title>
+
+  <!-- Loader -->
+  <link href="{% static 'assets/css/pace.min.css' %}" rel="stylesheet" />
+  <script src="{% static 'assets/js/pace.min.js' %}"></script>
+
+  <!-- Favicon -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Vector CSS -->
+  <link href="{% static 'assets/plugins/vectormap/jquery-jvectormap-2.0.2.css' %}" rel="stylesheet" />
+
+  <!-- Simplebar CSS -->
+  <link href="{% static 'assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" />
+
+  <!-- Animate CSS -->
+  <link href="{% static 'assets/css/animate.css' %}" rel="stylesheet" type="text/css" />
+
+  <!-- Icons CSS -->
+  <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet" type="text/css" />
+
+  <!-- Sidebar CSS -->
+  <link href="{% static 'assets/css/sidebar-menu.css' %}" rel="stylesheet" />
+
+  <!-- Custom Style -->
+  <link href="{% static 'assets/css/app-style.css' %}" rel="stylesheet" />
+</head>
+
+<body class="bg-theme bg-theme1">
+  <div id="wrapper">
+    <!-- Start sidebar-wrapper -->
+    {% include 'includes/sidebar.html' %}
+    <!-- End sidebar-wrapper -->
+
+    <!-- Start topbar header -->
+    <!-- Add topbar header content here if needed -->
+    <!-- End topbar header -->
+
+    <div class="clearfix"></div>
+
+    <!-- Start content-wrapper -->
+    <div class="content-wrapper">
+      <div class="container-fluid">
+        {% block content %}
+        {% endblock %}
+      </div>
+      <!-- End container-fluid -->
+    </div>
+    <!-- End content-wrapper -->
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- jQuery -->
+  <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+
+  <!-- Popper JS -->
+  <script src="{% static 'assets/js/popper.min.js' %}"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+  <!-- Simplebar JS -->
+  <script src="{% static 'assets/plugins/simplebar/js/simplebar.js' %}"></script>
+
+  <!-- Sidebar-menu JS -->
+  <script src="{% static 'assets/js/sidebar-menu.js' %}"></script>
+
+  <!-- Loader scripts -->
+  <script src="{% static 'assets/js/jquery.loading-indicator.js' %}"></script>
+
+  <!-- Custom scripts -->
+  <script src="{% static 'assets/js/app-script.js' %}"></script>
+
+  <!-- Chart.js -->
+  <script src="{% static 'assets/plugins/Chart.js/Chart.min.js' %}"></script>
+
+  <!-- Index JS -->
+  <script src="{% static 'assets/js/index.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row mt-3">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- Title of the card -->
+        <h5 class="card-title">User Profile</h5>
+
+        <!-- Responsive table container -->
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <!-- Table headers -->
+                <th scope="col">S No</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Location</th>
+                <th scope="col">Modified On</th>
+                <th scope="col">Action</th>                   
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Loop through each user detail -->
+              {% for i in users_detail %}                    
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ i.username }}</td>                  
+                <td>{% if i.home_address %}{{ i.home_address }}{% endif %}</td>
+                <td>{% if i.phone_number %}{{ i.phone_number }}{% endif %}</td>
+                <td>{% if i.location %}{{ i.location }}{% endif %}</td>
+                <td>{{ i.date_joined }}</td>
+                <td>                     
+                  <!-- Button to open edit modal -->
+                  <a href="#edit-form{{ i.id }}" class="btn btn-sm bg-success">Edit</a>
+                </td>
+              </tr>
+
+              <!-- Modal for editing user profile -->
+              <div id="edit-form{{ i.id }}" class="modal">
+                <div class="modal-content">
+                  <!-- Close button for modal -->
+                  <a href="#" class="close-btn">&times;</a>
+
+                  <!-- Modal header -->
+                  <h4 style="color: #000; text-align: center; margin-bottom: 20px;">Edit User Profile</h4>
+
+                  <!-- Edit user form -->
+                  <form id="edit-user-form-{{ i.id }}" method="POST" data-modal-id="edit-form{{ i.id }}" data-url="{% url 'edit_user' i.id %}">
+                    {% csrf_token %}
+
+                    <!-- Username input -->
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="name" value="{{ i.username }}" required>
+
+                    <!-- Email input with validation -->
+                    <label for="email">Email:</label>
+                    <input type="text" id="email-{{ i.id }}" name="email" value="{{ i.email }}" title="Please enter a valid email address"  required>
+                    <small id="email-error-{{ i.id }}" class="error-message" style="color: red; display: none;"></small>
+
+                    <!-- First name input -->
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ i.first_name }}">
+
+                    <!-- Last name input -->
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ i.last_name }}">
+
+                    <!-- Phone number input with validation -->
+                    <label for="phone_number">Phone Number:</label>
+                    <input type="text" id="phone_number-{{ i.id }}" name="phone_number" {% if i.phone_number %}value="{{ i.phone_number }}"{% endif %}>
+                    <small id="phone-error-{{ i.id }}" class="error-message" style="color: red; display: none;"></small>
+
+                    <!-- Home address input -->
+                    <label for="home_address">Home Address:</label>
+                    <input type="text" id="home_address" name="home_address" {% if i.home_address %}value="{{ i.home_address }}"{% endif %}>
+
+                    <!-- Location input -->
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" name="location" {% if i.location %}value="{{ i.location }}"{% endif %}>
+                    <small id="location-error-{{ i.id }}" class="error-message" style="color: red; display: none;"></small>
+
+                    <!-- Submit button -->
+                    <input type="submit" value="Save Changes" class="btn btn-success">
+                  </form>
+                </div>
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination controls -->
+    <div class="pagination d-flex justify-content-between align-items-center mt-4">
+      <!-- Previous page button -->
+      {% if users_detail.has_previous %}
+      <form method="get" action="">
+        <input type="hidden" name="page" value="{{ users_detail.previous_page_number }}">
+        <button type="submit" class="btn btn-outline-primary">Previous</button>
+      </form>
+      {% else %}
+      <button class="btn btn-outline-secondary" disabled>Previous</button>
+      {% endif %}
+
+      <!-- Current page info -->
+      <span class="mx-3">
+        Page {{ users_detail.number }} of {{ users_detail.paginator.num_pages }}
+      </span>
+
+      <!-- Next page button -->
+      {% if users_detail.has_next %}
+      <form method="get" action="">
+        <input type="hidden" name="page" value="{{ users_detail.next_page_number }}">
+        <button type="submit" class="btn btn-outline-primary">Next</button>
+      </form>
+      {% else %}
+      <button class="btn btn-outline-secondary" disabled>Next</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Popup notification element -->
+  <div id="popup" style="display:none; position:fixed; top:10px; left:50%; transform:translateX(-50%);
+      padding: 10px 20px; color:white; border-radius:5px; z-index:1000;">
+    <span id="popup-message"></span>
+  </div>
+</div>
+
+<script>
+  // Wait for DOM content to load before attaching event listeners
+  document.addEventListener("DOMContentLoaded", function () {
+    // Select all edit user forms by ID pattern
+    const forms = document.querySelectorAll("form[id^='edit-user-form-']");
+
+    // Iterate over each form to attach submit event handler
+    forms.forEach(function(form) {
+      form.onsubmit = function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        // Extract user ID from form ID
+        const formId = form.getAttribute("id").split("edit-user-form-")[1];
+
+        // Get email, phone, location input elements and their error message containers
+        const emailInput = document.getElementById(`email-${formId}`);
+        const phoneInput = document.getElementById(`phone_number-${formId}`);
+        const locationInput = document.getElementById("location");
+        const emailError = document.getElementById(`email-error-${formId}`);
+        const phoneError = document.getElementById(`phone-error-${formId}`);
+        const locationError = document.getElementById(`location-error-${formId}`);
+                
+        // Hide previous error messages
+        emailError.style.display = "none";
+        phoneError.style.display = "none";
+
+        // Define regex patterns for validation
+        const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+        const phonePattern = /^\d{10}$/;        
+        const locationPattern = /^-?\d{1,2}(\.\d+)?,-?\d{1,3}(\.\d+)?$/;  // e.g. 12.9716,77.5946
+        
+        const locationValue = locationInput.value.trim(); // Get trimmed location value        
+        let hasError = false;
+
+        // Validate email format
+        if (!emailPattern.test(emailInput.value)) {
+          emailError.textContent = "Please enter a valid email address.";
+          emailError.style.display = "block";
+          hasError = true;
+        }
+
+        // Validate phone number format (exactly 10 digits)
+        if (phoneInput.value.trim() !== "" && !phonePattern.test(phoneInput.value)) {
+          phoneError.textContent = "Phone number must be exactly 10 digits.";
+          phoneError.style.display = "block";
+          hasError = true;
+        }
+
+        // Validate location format (latitude,longitude)
+        if (locationValue && !locationPattern.test(locationValue)) {
+            locationError.textContent = "Location must be in 'latitude,longitude' format (e.g. 12.9716,77.5946))."
+            locationError.style.display = "block";
+            hasError = true;
+        }
+
+        // If validation errors exist, stop submission
+        if (hasError) return;
+
+        // Prepare form data for submission
+        const formData = new FormData(form);
+        const url = form.getAttribute("data-url");
+        const modalId = form.getAttribute("data-modal-id");
+        const modal = document.getElementById(modalId);
+
+        // Get CSRF token for secure POST request
+        const csrfTokenElement = form.querySelector('[name=csrfmiddlewaretoken]');
+        const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
+
+        // Send POST request to update user data
+        fetch(url, {
+          method: "POST",
+          body: formData,
+          headers: {
+            'X-CSRFToken': csrfToken,
+          },
+          credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Show success or failure popup based on response
+          if (data.status === "success") {
+            openPopup("✅ User updated successfully!", "success");
+            modal.style.display = "none"; // Close modal on success
+            history.replaceState(null, null, ' '); // Clear URL hash
+            setTimeout(() => window.location.href = window.location.href, 3000); // Redirect after 3 seconds
+          } else {
+            openPopup("❌ Failed to update user.", "error");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          openPopup("❌ Something went wrong.", "error");
+        });
+      };
+    });
+  });
+
+  /**
+   * Displays a popup notification with a message and color based on type.
+   * @param {string} message - The message to display.
+   * @param {string} type - 'success' or 'error' to set popup color.
+   */
+  function openPopup(message, type) {
+    const popup = document.getElementById('popup');
+    const messageElement = document.getElementById('popup-message');
+    messageElement.innerText = message;
+    popup.style.backgroundColor = (type === 'success') ? 'green' : 'red';
+    popup.style.display = 'block';
+    // Automatically close popup after 2.5 seconds
+    setTimeout(() => closePopup(), 2500);
+  }
+
+  /**
+   * Hides the popup notification.
+   */
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+</script>
+
+{% endblock %}
